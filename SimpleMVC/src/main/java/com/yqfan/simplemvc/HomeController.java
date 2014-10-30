@@ -27,9 +27,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yqfan.simplemvc.dao.GiftDao;
 import com.yqfan.simplemvc.dao.UserDao;
-
-import come.yqfan.simplemvc.model.Gift;
-import come.yqfan.simplemvc.model.User;
+import com.yqfan.simplemvc.model.Gift;
+import com.yqfan.simplemvc.model.User;
 
 /**
  * Handles requests for the application home page.
@@ -226,17 +225,5 @@ public class HomeController {
             return model;
         }
     }
-     
-    @RequestMapping(value = "/user**", method = RequestMethod.GET)
-    public ModelAndView UserPage() {
-    	 
-		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security Hello World");
-		model.addObject("message", "This is protected page!");
-		model.setViewName("user");
- 
-		return model;
- 
-	}
-	
+    	
 }

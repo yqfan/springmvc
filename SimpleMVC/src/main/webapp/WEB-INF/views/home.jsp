@@ -5,10 +5,8 @@
 	<title>Home</title>
 </head>
 <body>
-<h1>
-	Hello world!  
-</h1>
-
-<P>  The time on the server is ${serverTime}. </P>
+<a href="login">Login</a> <br>
+<a href="giftchain">View Gift Chain</a> <br>
+<a href="uploadGift">Create New Gift</a>
 </body>
 </html>

@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import come.yqfan.simplemvc.model.Gift;
+import com.yqfan.simplemvc.model.Gift;
 
 public class GiftFileManager {
 	public static GiftFileManager get() throws IOException {

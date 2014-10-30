@@ -67,9 +67,13 @@
 				  value="Register" /></td>
 			</tr>
 		  </table>
+		  <input type="hidden" name="${_csrf.parameterName}"
+			value="${_csrf.token}" />
  
 		</form>
+		
 	</div>
+	<div><a href="home">Home</a></div>
 	
 </body>
 </html>

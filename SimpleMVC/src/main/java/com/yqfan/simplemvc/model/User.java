@@ -1,4 +1,4 @@
-package come.yqfan.simplemvc.model;
+package com.yqfan.simplemvc.model;
 
 public class User {
 	private String userName;

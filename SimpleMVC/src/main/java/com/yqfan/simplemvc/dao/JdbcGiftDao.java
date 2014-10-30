@@ -1,6 +1,5 @@
 package com.yqfan.simplemvc.dao;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,8 +10,7 @@ import java.util.Collection;
 import javax.sql.DataSource;
 
 import com.yqfan.simplemvc.HomeController;
-
-import come.yqfan.simplemvc.model.Gift;
+import com.yqfan.simplemvc.model.Gift;
 
 public class JdbcGiftDao implements GiftDao {
 	

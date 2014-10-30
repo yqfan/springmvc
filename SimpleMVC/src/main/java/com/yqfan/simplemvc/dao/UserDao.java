@@ -1,6 +1,6 @@
 package com.yqfan.simplemvc.dao;
 
-import come.yqfan.simplemvc.model.User;
+import com.yqfan.simplemvc.model.User;
 
 public interface UserDao {
 	public void insert(User user);

@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import come.yqfan.simplemvc.model.User;
+import com.yqfan.simplemvc.model.User;
 
 public class JdbcUserDao implements UserDao {
 

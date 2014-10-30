@@ -77,6 +77,7 @@
         <div class="form-group col-lg-4">
             <!-- Add create user account link -->
             <a href="register">Do not have an account? Register me!</a>
+            <a href="home">Home</a>
         </div>
     </div>
  

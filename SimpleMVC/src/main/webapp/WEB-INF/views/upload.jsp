@@ -17,6 +17,7 @@
         <input type="submit" value="Upload"> Press here to upload the gift!
         
     </form>
+    <div><a href="home">Home</a></div>
     
     </c:if> 
 </body>
