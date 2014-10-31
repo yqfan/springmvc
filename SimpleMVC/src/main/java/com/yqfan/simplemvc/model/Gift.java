@@ -27,7 +27,7 @@ public class Gift {
 		owner = "1";
 		touchCount = 0;
 		votedUserUrl = "";
-		votedUser = null;
+		votedUser = new HashSet<String>();
 	}
 	
 	public void setId(long x) {
@@ -100,16 +100,16 @@ public class Gift {
 	
 	public HashSet<String> getVotedUser() {
 		// unserialize voted user set from the file "votedUserUrl"
-		if (votedUser == null) {
-			ObjectInputStream ois = null;
-			try {
-				ois = new ObjectInputStream(new FileInputStream(votedUserUrl));
-				votedUser = (HashSet<String>) ois.readObject();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
+		ObjectInputStream ois = null;
+		try {
+			ois = new ObjectInputStream(new FileInputStream(votedUserUrl));
+			System.out.println("votedUserUrl="+votedUserUrl);
+			votedUser = (HashSet<String>) ois.readObject();
+			ois.close();
+		} catch (IOException e) {
 			e.printStackTrace();
-			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		return votedUser;
 	}
@@ -120,6 +120,7 @@ public class Gift {
 		try {
 			oos = new ObjectOutputStream(new FileOutputStream(votedUserUrl));
 			oos.writeObject(votedUser);
+			oos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

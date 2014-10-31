@@ -42,6 +42,9 @@ public class JdbcGiftDao implements GiftDao {
 			ps.setString(1, gift.getTitle());
 			ps.setString(2, gift.getDescription());
 			ps.setString(3, gift.getDataUrl());
+			ps.setString(4, gift.getOwner());
+			ps.setLong(5, gift.getTouchCount());
+			ps.setString(6, gift.getVotedUserUrl());
 			ps.executeUpdate();
 			ps.close();
 			
@@ -131,7 +134,7 @@ public class JdbcGiftDao implements GiftDao {
 		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(2, title);
+			ps.setString(1, title);
 			Gift gift = null;
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -207,7 +210,7 @@ public class JdbcGiftDao implements GiftDao {
 		String dataurl = gift.getDataUrl();
 		String voteurl = gift.getVotedUserUrl();
 		
-		String sql="UPDATE GIFT SET title=?, descrip=?, owner=?, dataurl=?, touchcntt=?, voteurl=? WHERE id = ?";
+		String sql="UPDATE GIFT SET title=?, descrip=?, owner=?, dataurl=?, touchcnt=?, voteurl=? WHERE id = ?";
 		
 		Connection conn = null;
 		try {

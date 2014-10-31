@@ -73,6 +73,7 @@ public class HomeController {
     private String getCurrentUserName() {
     	User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = user.getUsername(); //get logged in username
+        logger.info("getCurrentUserName is called: current login user="+name);
         return name;
     }
 
@@ -161,6 +162,7 @@ public class HomeController {
 	
 	@RequestMapping(value="/giftdetail", method=RequestMethod.POST)
 	public ModelAndView updateVote(@RequestParam("id") long id) {
+		logger.info("giftdetail post vote is called, giftid="+id);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("giftdetail");
 		
@@ -171,7 +173,7 @@ public class HomeController {
 		String curUserName = getCurrentUserName();
 		HashSet<String> votedUserSet = gift.getVotedUser();
 		if (votedUserSet.contains(curUserName)) {
-			model.addObject("message", "You have voted for this gift before.");
+			//model.addObject("message", "You have voted for this gift before.");
 			return model;
 		}
 		else {
@@ -187,7 +189,7 @@ public class HomeController {
 			owner.incrementTotalVotes();
 			userdao.updateItem(owner);
 			
-			model.addObject("message", "Thanks for your vote!");
+			//model.addObject("message", "Thanks for your vote!");
 		}
 		
 		return model;
@@ -251,6 +253,10 @@ public class HomeController {
  
                 logger.info("Server File Location="
                         + serverFile.getAbsolutePath());
+                
+                File voteFile = new File(gift.getVotedUserUrl());
+                gift.saveVotedUser();
+                logger.info("Vote user file location=" + voteFile.getAbsolutePath());
                 
                 model.addObject("message", "Upload successful!");
                 return model;

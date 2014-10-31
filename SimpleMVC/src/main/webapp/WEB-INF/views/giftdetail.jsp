@@ -1,3 +1,6 @@
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
@@ -9,10 +12,12 @@
 	Owner : "<strong> ${gift.owner} </strong>" <br>
 	<img src="imagedisplay?id=${gift.id}" alt="image is not available" style="width:400px;height:228px"/>
  	Touched by : "<strong> ${gift.touchCount }</strong>" 
+ 	<sec:authorize access="hasRole('ROLE_USER')">
  	<form name="voteForm" action="giftdetail?id=${gift.id }" method="POST" > 
  		<input type="submit" name="vote" value="vote for me"/>
  		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	</form><br>
+	</sec:authorize>
  	<div><a href="giftchain">View Gift Chain</a></div>
  	<div><a href="home">Home</a></div>
 </body>
