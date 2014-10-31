@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.sql.DataSource;
 
@@ -26,12 +28,13 @@ public class JdbcUserDao implements UserDao {
 	public void insert(MyUser user) {
 		String name = user.getUserName();
 		String pass = user.getPassWord();
+		long votes = user.getTotalVotes();
 		String role = "ROLE_USER";
 		if (findByName(name) != null) {
 			return;
 		}
 		
-		String sql = "INSERT INTO users(username, password, enabled) VALUES (?,?,TRUE)";
+		String sql = "INSERT INTO users(username, password, votes, enabled) VALUES (?,?,?,TRUE)";
 		String sql2 = "INSERT INTO user_roles(username, role) VALUES(?, ?)";
 		Connection conn = null;
 		try {
@@ -39,6 +42,7 @@ public class JdbcUserDao implements UserDao {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, name);
 			ps.setString(2, pass);
+			ps.setLong(3,votes);
 			ps.executeUpdate();
 			ps.close();
 			
@@ -62,7 +66,7 @@ public class JdbcUserDao implements UserDao {
 
 	@Override
 	public MyUser findByName(String userName) {
-		String sql = "SELECT users.username,users.password,user_roles.role FROM users, user_roles WHERE users.username = ? AND user_roles.username = ?";
+		String sql = "SELECT users.username,users.password,users.votes,user_roles.role FROM users, user_roles WHERE users.username = ? AND user_roles.username = ?";
 		Connection conn = null;
 		MyUser user = null;
 		try {
@@ -75,7 +79,8 @@ public class JdbcUserDao implements UserDao {
 				user = new MyUser();
 				user.setUserName(rs.getString(1));
 				user.setPassWord(rs.getString(2));
-				user.setRole(rs.getString(3));
+				user.setTotalVotes(rs.getLong(3));
+				user.setRole(rs.getString(4));
 			}
 			rs.close();
 			ps.close();
@@ -125,6 +130,36 @@ public class JdbcUserDao implements UserDao {
 			}
 		}
 		
+	}
+
+	@Override
+	public Collection<MyUser> getAll() {
+		ArrayList<MyUser> res = new ArrayList<MyUser>();
+		String sql = "SELECT * from users";
+		Connection conn = null;
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				String name = rs.getString("username");
+				long cnt = rs.getLong("votes");
+				MyUser myuser = new MyUser();
+				myuser.setUserName(name);
+				myuser.setTotalVotes(cnt);
+				res.add(myuser);
+			}
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (conn != null) {
+				try {
+				conn.close();
+				} catch (SQLException e) {}
+			}
+		}
+		return res;
 	}
 
 }

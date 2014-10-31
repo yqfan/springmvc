@@ -11,7 +11,7 @@
 	<c:if test="${pageContext.request.userPrincipal.name != null}">
 	   <h4>Welcome : ${pageContext.request.userPrincipal.name} </h4>  
 	 
-    <form method="POST" action="uploadGift?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
+    <form method="POST" action="uploadgift?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
         Image: <input type="file" name="file"><br /> 
         Title: <input type="text" name="title"><br />
         Description: <input type="text" name="desc"><br/> <br /> 

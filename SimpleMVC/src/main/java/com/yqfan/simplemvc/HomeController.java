@@ -8,9 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +35,8 @@ import com.yqfan.simplemvc.dao.GiftDao;
 import com.yqfan.simplemvc.dao.UserDao;
 import com.yqfan.simplemvc.model.Gift;
 import com.yqfan.simplemvc.model.MyUser;
+import com.yqfan.simplemvc.util.GiftTouchCountComp;
+import com.yqfan.simplemvc.util.UserTotalVoteComp;
 
 /**
  * Handles requests for the application home page.
@@ -208,16 +213,16 @@ public class HomeController {
 	    response.getOutputStream().close();
 	}
 	
-	@RequestMapping(value="/uploadGift", method=RequestMethod.GET) 
+	@RequestMapping(value="/uploadgift", method=RequestMethod.GET) 
 	public String getUploadGiftView(){
-		logger.info("/uploadGift GET method is called");
+		logger.info("/uploadgift GET method is called");
 		return "upload";
 	}
 	
-	@RequestMapping(value="/uploadGift", method=RequestMethod.POST)
+	@RequestMapping(value="/uploadgift", method=RequestMethod.POST)
     public ModelAndView uploadGift(@RequestParam("title") String title, @RequestParam("desc") String desc,
     		@RequestParam("file") MultipartFile file) {
-		logger.info("/uploadGift POST method is called");
+		logger.info("/uploadgift POST method is called");
 		Gift gift = new Gift(title, desc);
 		
 		// get current user, in order to set the owner of this gift
@@ -270,5 +275,36 @@ public class HomeController {
             return model;
         }
     }
+	
+	@RequestMapping(value="/populargift", method=RequestMethod.GET)
+	public ModelAndView getPopularGifts() {
+		final int TOP_NUM = 10;
+		ModelAndView model = new ModelAndView();
+		List<Gift> gifts = new ArrayList<Gift>();
+		gifts.addAll(giftdao.getAll());
+		Collections.sort(gifts, new GiftTouchCountComp());
+		List<Gift> topGifts = new ArrayList<Gift>(TOP_NUM);
+		for (int i = 0; i < TOP_NUM && i < gifts.size(); ++i) {
+			topGifts.add(gifts.get(i));
+		}
+		model.addObject("topgifts", topGifts);
+		return model;
+	}
+	
+	@RequestMapping(value="/popularuser", method=RequestMethod.GET)
+	public ModelAndView getPopularUsers() {
+		final int TOP_NUM = 10;
+		ModelAndView model = new ModelAndView();
+		List<MyUser> users = new ArrayList<MyUser>();
+		users.addAll(userdao.getAll());
+		Collections.sort(users, new UserTotalVoteComp());
+		List<MyUser> topUsers = new ArrayList<MyUser>(TOP_NUM);
+		for (int i = 0; i < TOP_NUM && i < users.size(); ++i) {
+			topUsers.add(users.get(i));
+		}
+		logger.info("topUsers.size="+topUsers.size());
+		model.addObject("topusers", topUsers);
+		return model;
+	}
     	
 }

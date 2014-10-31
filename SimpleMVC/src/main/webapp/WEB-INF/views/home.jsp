@@ -9,9 +9,11 @@
 <body>
 <h2>Spring MVC Application -- Sharing Photos</h2>
 <ul>
-<li><a href="login">Login</a></li>
+<li><a href="login">Login</a> | <a href="register">Register</a></li>
 <li><a href="giftchain">View Gift Chain</a></li>
-<li><a href="uploadGift">Create New Gift</a></li>
+<li><a href="uploadgift">Create New Gift</a></li>
+<li><a href="populargift">Most Popular Gifts</a></li>
+<li><a href="popularuser">Most Popular Users</a></li>
 </ul>
 
 	<sec:authorize access="hasRole('ROLE_USER')">
