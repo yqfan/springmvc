@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yqfan.simplemvc.dao.GiftDao;
 import com.yqfan.simplemvc.dao.UserDao;
 import com.yqfan.simplemvc.model.Gift;
-import com.yqfan.simplemvc.model.User;
+import com.yqfan.simplemvc.model.MyUser;
 
 /**
  * Handles requests for the application home page.
@@ -37,8 +40,8 @@ import com.yqfan.simplemvc.model.User;
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-    private GiftFileManager giftFileMgr;
-    
+
+	
     @Autowired
     private GiftDao giftdao;
     
@@ -50,6 +53,9 @@ public class HomeController {
     
     public static String getGiftAbsPath(Gift gift) {
     	return GIFT_STORE_PATH + File.separator + "id"+gift.getId() + '_' + gift.getOriName();
+    }
+    public static String getVoteAbsPath(Gift gift) {
+    	return GIFT_STORE_PATH + File.separator + "id"+gift.getId() + '_' + "voteUsers";    	
     }
     private void save(Gift entity) {
         giftdao.insert(entity);
@@ -63,18 +69,13 @@ public class HomeController {
     private Gift getById(long id) {
     	return giftdao.findById(id);
     }
-
     
-    public void saveSomeGift(Gift g, MultipartFile giftFile) throws IOException {
-        giftFileMgr = GiftFileManager.get();
-        giftFileMgr.saveGiftFile(g, giftFile.getInputStream());
+    private String getCurrentUserName() {
+    	User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername(); //get logged in username
+        return name;
     }
 
-    public void serveSomeGift(Gift g, HttpServletResponse response) throws IOException {
-        giftFileMgr = GiftFileManager.get();
-        response.setStatus(HttpServletResponse.SC_OK);
-        giftFileMgr.copyGiftFile(g, response.getOutputStream());
-    }
     
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -124,11 +125,13 @@ public class HomeController {
 			model.addObject("redirect", "register");
 			return model;
 		}
-		User user = new User();
+		MyUser user = new MyUser();
 		user.setUserName(username);
 		user.setPassWord(password);
 		user.setRole("ROLE_USER");
+		user.setTotalVotes(0);
 		userdao.insert(user);
+		
 		model.addObject("name", username);
 		model.addObject("message", "You have successfully registered!");
 		model.addObject("redirect", "home");
@@ -151,10 +154,42 @@ public class HomeController {
 		logger.info("getGiftDetail is called, giftid="+id);
 		Gift gift = getById(id);
 		ModelAndView model = new ModelAndView();
-		model.addObject("title", gift.getTitle());
-		model.addObject("desc", gift.getDescription());
-		model.addObject("id", gift.getId());
+		model.addObject("gift", gift);
 		logger.info("dataurl="+gift.getDataUrl() + ",id="+gift.getId());
+		return model;
+	}
+	
+	@RequestMapping(value="/giftdetail", method=RequestMethod.POST)
+	public ModelAndView updateVote(@RequestParam("id") long id) {
+		ModelAndView model = new ModelAndView();
+		model.setViewName("giftdetail");
+		
+		Gift gift = giftdao.findById(id);
+		model.addObject("gift", gift);
+		
+		//get current user, and get votedUserSet from gift. In order to decide if current user has already voted.
+		String curUserName = getCurrentUserName();
+		HashSet<String> votedUserSet = gift.getVotedUser();
+		if (votedUserSet.contains(curUserName)) {
+			model.addObject("message", "You have voted for this gift before.");
+			return model;
+		}
+		else {
+			// if the current user has not voted before, after he votes, call the gift's save votedUserSet method.
+			votedUserSet.add(curUserName);
+			gift.saveVotedUser();
+			
+			// update gift table and user table of the gift owner
+			gift.incrementTouchCount();
+			giftdao.updateItem(gift);
+			String ownername = gift.getOwner();
+			MyUser owner = userdao.findByName(ownername);
+			owner.incrementTotalVotes();
+			userdao.updateItem(owner);
+			
+			model.addObject("message", "Thanks for your vote!");
+		}
+		
 		return model;
 	}
 	
@@ -182,6 +217,10 @@ public class HomeController {
     		@RequestParam("file") MultipartFile file) {
 		logger.info("/uploadGift POST method is called");
 		Gift gift = new Gift(title, desc);
+		
+		// get current user, in order to set the owner of this gift
+		String curUserName = getCurrentUserName();
+		gift.setOwner(curUserName);
 		
 		// save will do setId, setDataUrl. 
 		// if there is no image, still dataUrl=ROOT_PATH+id+original_name, but this file does not actually exist.

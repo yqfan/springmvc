@@ -26,11 +26,13 @@ public class JdbcGiftDao implements GiftDao {
 		// get an id for gift.
 		// get a dataurl for gift after the id, and update the item in mysql.
 		String sql = "INSERT INTO GIFT " +
-				"(TITLE, DESCRIP, DATAURL) VALUES (?, ?, ?)";
+				"(TITLE, DESCRIP, DATAURL, OWNER, TOUCHCNT, VOTEURL) VALUES (?, ?, ?, ?, ?, ?)";
 		String sqlcnt = "SELECT COUNT(*) FROM GIFT";
-		String sqlupdate="UPDATE GIFT SET dataurl = ? WHERE id = ?";
+		String sqlupdate="UPDATE GIFT SET dataurl = ?, voteurl=? WHERE id = ?";
+		
 		long id = -1;
 		String dataurl = null;
+		String voteurl = null;
 		Connection conn = null;
  
 		try {
@@ -57,10 +59,14 @@ public class JdbcGiftDao implements GiftDao {
 			// get dataurl for this gift
 			dataurl = HomeController.getGiftAbsPath(gift);
 			System.out.println("dataurl="+dataurl);
+			voteurl = HomeController.getVoteAbsPath(gift);
+			System.out.println("voteurl="+voteurl);
 			gift.setDataUrl(dataurl);
+			gift.setVotedUserUrl(voteurl);
 			ps = conn.prepareStatement(sqlupdate);
 			ps.setString(1, dataurl);
-			ps.setLong(2, id);
+			ps.setString(2, voteurl);
+			ps.setLong(3, id);
 			ps.executeUpdate();
 			ps.close();
  
@@ -97,6 +103,9 @@ public class JdbcGiftDao implements GiftDao {
 				);
 				gift.setId(rs.getLong("ID"));
 				gift.setDataUrl(rs.getString("DATAURL"));
+				gift.setOwner(rs.getString("OWNER"));
+				gift.setVotedUserUrl(rs.getString("VOTEURL"));
+				gift.setTouchCount(rs.getLong("TOUCHCNT"));
 			}
 			rs.close();
 			ps.close();
@@ -132,6 +141,9 @@ public class JdbcGiftDao implements GiftDao {
 				);
 				gift.setId(rs.getLong("ID"));
 				gift.setDataUrl(rs.getString("DATAURL"));
+				gift.setOwner(rs.getString("OWNER"));
+				gift.setVotedUserUrl(rs.getString("VOTEURL"));
+				gift.setTouchCount(rs.getLong("TOUCHCNT"));
 				res.add(gift);
 			}
 			rs.close();
@@ -166,6 +178,9 @@ public class JdbcGiftDao implements GiftDao {
 				);
 				gift.setId(rs.getLong("ID"));
 				gift.setDataUrl(rs.getString("DATAURL"));
+				gift.setOwner(rs.getString("OWNER"));
+				gift.setVotedUserUrl(rs.getString("VOTEURL"));
+				gift.setTouchCount(rs.getLong("TOUCHCNT"));
 				res.add(gift);
 			}
 			rs.close();
@@ -181,5 +196,44 @@ public class JdbcGiftDao implements GiftDao {
 			}
 		}
 	}
+
+	@Override
+	public void updateItem(Gift gift) {
+		long id = gift.getId();
+		String title = gift.getTitle();
+		String description = gift.getDescription();
+		String owner = gift.getOwner();
+		long touchCount = gift.getTouchCount();
+		String dataurl = gift.getDataUrl();
+		String voteurl = gift.getVotedUserUrl();
+		
+		String sql="UPDATE GIFT SET title=?, descrip=?, owner=?, dataurl=?, touchcntt=?, voteurl=? WHERE id = ?";
+		
+		Connection conn = null;
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, title);
+			ps.setString(2, description);
+			ps.setString(3, owner);
+			ps.setString(4, dataurl);
+			ps.setLong(5, touchCount);
+			ps.setString(6, voteurl);
+			ps.setLong(7, id);
+			ps.executeUpdate();
+			ps.close();
+ 
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+ 
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {}
+			}
+		}
+	}
+		
 
 }

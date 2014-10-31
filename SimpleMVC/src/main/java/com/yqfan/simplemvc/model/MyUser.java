@@ -1,9 +1,14 @@
 package com.yqfan.simplemvc.model;
 
-public class User {
+public class MyUser {
 	private String userName;
 	private String passWord;
 	private String role;
+	private long totalVotes;
+	
+	public MyUser() {
+		totalVotes = 0;
+	}
 	 
     public String getUserName() {
         return userName;
@@ -27,5 +32,17 @@ public class User {
     
     public void setRole(String role) {
     	this.role = role;
+    }
+    
+    public long getTotalVotes() {
+    	return totalVotes;
+    }
+    
+    public void setTotalVotes(long x) {
+    	this.totalVotes = x;
+    }
+    
+    public void incrementTotalVotes() {
+    	++totalVotes;
     }
 }

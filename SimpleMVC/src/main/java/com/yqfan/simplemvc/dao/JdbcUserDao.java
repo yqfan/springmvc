@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.yqfan.simplemvc.model.User;
+import com.yqfan.simplemvc.model.MyUser;
 
 public class JdbcUserDao implements UserDao {
 
@@ -23,7 +23,7 @@ public class JdbcUserDao implements UserDao {
 	}
 	
 	@Override
-	public void insert(User user) {
+	public void insert(MyUser user) {
 		String name = user.getUserName();
 		String pass = user.getPassWord();
 		String role = "ROLE_USER";
@@ -61,10 +61,10 @@ public class JdbcUserDao implements UserDao {
 	}
 
 	@Override
-	public User findByName(String userName) {
+	public MyUser findByName(String userName) {
 		String sql = "SELECT users.username,users.password,user_roles.role FROM users, user_roles WHERE users.username = ? AND user_roles.username = ?";
 		Connection conn = null;
-		User user = null;
+		MyUser user = null;
 		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -72,7 +72,7 @@ public class JdbcUserDao implements UserDao {
 			ps.setString(2, userName);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				user = new User();
+				user = new MyUser();
 				user.setUserName(rs.getString(1));
 				user.setPassWord(rs.getString(2));
 				user.setRole(rs.getString(3));
@@ -89,6 +89,42 @@ public class JdbcUserDao implements UserDao {
 				} catch (SQLException e) {}
 			}
 		}
+	}
+
+	@Override
+	public void updateItem(MyUser user) {
+		String name = user.getUserName();
+		String pass = user.getPassWord();
+		long cnt = user.getTotalVotes();
+		String role = "ROLE_USER";
+		
+		String sql1 = "UPDATE users SET password=?, votes=? where username=?";
+		String sql2 = "UPDATE user_roles SET role=? where username=?";
+		Connection conn = null;
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql1);
+			ps.setString(1, pass);
+			ps.setLong(2, cnt);
+			ps.setString(3, name);
+			ps.executeUpdate();
+			ps.close();
+			
+			ps = conn.prepareStatement(sql2);
+			ps.setString(1,  role);
+			ps.setString(2, name);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (conn != null) {
+				try {
+				conn.close();
+				} catch (SQLException e) {}
+			}
+		}
+		
 	}
 
 }
