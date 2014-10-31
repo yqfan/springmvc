@@ -48,7 +48,7 @@ public class HomeController {
     @Autowired
     private UserDao userdao;
     
-    public static final String GIFT_STORE_PATH = "/Users/yqfan/Documents/SpringServerStorage/cloudsvc/giftdata";
+    public static final String GIFT_STORE_PATH = "./SpringServerStorage/cloudsvc/giftdata";
 
     
     public static String getGiftAbsPath(Gift gift) {

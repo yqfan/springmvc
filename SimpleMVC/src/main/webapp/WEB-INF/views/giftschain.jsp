@@ -1,12 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<table>
+<html>
+<body>
+<h2>Gift Chain View</h2>
+<ul>
   <c:forEach items="${gifts}" var="item">
-    <tr>
-      <td>
-    	<a class="textLink" style="color: #CC0000" href="<c:url value="/giftdetail?id=${item.id }" />" ><c:out value="${item.title}" /></a>
-	  </td>
-    </tr>
+    
+    	<li><a class="textLink" style="color: green" href="<c:url value="/giftdetail?id=${item.id }" />" ><c:out value="${item.title}" /></a></li>
+	
   </c:forEach>
-</table>
-
+</ul>
 <div><a href="home">Home</a></div>
+</body>
+</html>

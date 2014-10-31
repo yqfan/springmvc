@@ -6,9 +6,10 @@
 </head>
 <body>
 
+<h2>Create and Share Your Gift</h2>
+
 	<c:if test="${pageContext.request.userPrincipal.name != null}">
-	   <h2>Welcome : ${pageContext.request.userPrincipal.name} 
-           | <a href="<c:url value="/j_spring_security_logout" />" > Logout</a></h2>  
+	   <h4>Welcome : ${pageContext.request.userPrincipal.name} </h4>  
 	 
     <form method="POST" action="uploadGift?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data">
         Image: <input type="file" name="file"><br /> 

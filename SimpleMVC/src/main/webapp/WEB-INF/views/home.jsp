@@ -7,9 +7,12 @@
 	<title>Home</title>
 </head>
 <body>
-<a href="login">Login</a> <br>
-<a href="giftchain">View Gift Chain</a> <br>
-<a href="uploadGift">Create New Gift</a>
+<h2>Spring MVC Application -- Sharing Photos</h2>
+<ul>
+<li><a href="login">Login</a></li>
+<li><a href="giftchain">View Gift Chain</a></li>
+<li><a href="uploadGift">Create New Gift</a></li>
+</ul>
 
 	<sec:authorize access="hasRole('ROLE_USER')">
 		<!-- For login user -->
@@ -25,10 +28,10 @@
 		</script>
  
 		<c:if test="${pageContext.request.userPrincipal.name != null}">
-			<h2>
+			<h4>
 				User : ${pageContext.request.userPrincipal.name} | <a
 					href="javascript:formSubmit()"> Logout</a>
-			</h2>
+			</h4>
 		</c:if>
  
  

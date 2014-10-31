@@ -25,10 +25,10 @@ public class JdbcGiftDao implements GiftDao {
 		// insert gift object into mysql. gift object only has 'title' and 'description' set.
 		// get an id for gift.
 		// get a dataurl for gift after the id, and update the item in mysql.
-		String sql = "INSERT INTO GIFT " +
+		String sql = "INSERT INTO gift " +
 				"(TITLE, DESCRIP, DATAURL, OWNER, TOUCHCNT, VOTEURL) VALUES (?, ?, ?, ?, ?, ?)";
-		String sqlcnt = "SELECT COUNT(*) FROM GIFT";
-		String sqlupdate="UPDATE GIFT SET dataurl = ?, voteurl=? WHERE id = ?";
+		String sqlcnt = "SELECT COUNT(*) FROM gift";
+		String sqlupdate="UPDATE gift SET dataurl = ?, voteurl=? WHERE id = ?";
 		
 		long id = -1;
 		String dataurl = null;
@@ -89,7 +89,7 @@ public class JdbcGiftDao implements GiftDao {
 
 	@Override
 	public Gift findById(long id) {
-		String sql = "SELECT * FROM GIFT WHERE ID = ?";
+		String sql = "SELECT * FROM gift WHERE ID = ?";
 		 
 		Connection conn = null;
  
@@ -126,7 +126,7 @@ public class JdbcGiftDao implements GiftDao {
 
 	@Override
 	public Collection<Gift> findByTitle(String title) {
-		String sql = "SELECT * FROM GIFT WHERE TITLE = ?";
+		String sql = "SELECT * FROM gift WHERE TITLE = ?";
 		 
 		Connection conn = null;
 		ArrayList<Gift> res = new ArrayList<Gift>();
@@ -165,7 +165,7 @@ public class JdbcGiftDao implements GiftDao {
 	
 	@Override
 	public Collection<Gift> getAll() {
-		String sql = "SELECT * FROM GIFT";
+		String sql = "SELECT * FROM gift";
 		Connection conn = null;
 		ArrayList<Gift> res = new ArrayList<Gift>();
  
@@ -210,7 +210,7 @@ public class JdbcGiftDao implements GiftDao {
 		String dataurl = gift.getDataUrl();
 		String voteurl = gift.getVotedUserUrl();
 		
-		String sql="UPDATE GIFT SET title=?, descrip=?, owner=?, dataurl=?, touchcnt=?, voteurl=? WHERE id = ?";
+		String sql="UPDATE gift SET title=?, descrip=?, owner=?, dataurl=?, touchcnt=?, voteurl=? WHERE id = ?";
 		
 		Connection conn = null;
 		try {
