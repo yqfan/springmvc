@@ -23,6 +23,7 @@
 	<beans:import resource="../../spring-database.xml" />
 	<beans:import resource="../../spring-gift.xml"/>
 	<beans:import resource="../../spring-user.xml"/>
+	<beans:import resource="../../spring-security.xml"/>
 	
 	<context:component-scan base-package="com.yqfan.simplemvc" />
 	

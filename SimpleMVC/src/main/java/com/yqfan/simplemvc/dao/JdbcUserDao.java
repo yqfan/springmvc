@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.yqfan.simplemvc.model.MyUser;
 
@@ -19,15 +20,21 @@ public class JdbcUserDao implements UserDao {
 	private static final Logger logger = LoggerFactory.getLogger(JdbcUserDao.class);
 	
 	private DataSource dataSource;
+	private PasswordEncoder passwordEncoder;
 	
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 	
+	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
+	
 	@Override
 	public void insert(MyUser user) {
 		String name = user.getUserName();
-		String pass = user.getPassWord();
+		String pass = passwordEncoder.encode(user.getPassWord());
+		
 		long votes = user.getTotalVotes();
 		String role = "ROLE_USER";
 		if (findByName(name) != null) {
