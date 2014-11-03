@@ -1,21 +1,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<context:property-placeholder location="WEB-INF/application.properties"/>
  
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		
+		<!-- The following 3 lines are for local mysql database 
 		<property name="url" value="jdbc:mysql://localhost:3306/test" />
-		<!-- 
-		<property name="url" value="jdbc:mysql://mysqldb.cjnnb5xs460m.us-west-2.rds.amazonaws.com:3306/test"/>
-		-->
 		<property name="username" value="root" />
 		<property name="password" value=""/>
-		<!-- 
-		<property name="password" value="fan666666" />
 		 -->
+		
+		<!-- The following 3 lines are for AWS mysql database -->
+		<property name="url" value="${mysqlUrl}"/>
+		<property name="username" value="${mysqlUserName}" />
+		<property name="password" value="${mysqlPassWord}" />
+		 
 	</bean>
  
 </beans>

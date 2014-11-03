@@ -9,4 +9,9 @@
 	<import resource="../spring-multipart.xml" />
 	<import resource="../spring-security.xml" />
 	<import resource="../spring-user.xml"/>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+    </bean>
 </beans>

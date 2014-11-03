@@ -5,17 +5,19 @@
 <html>
 <head>
 	<title>Home</title>
+	<link rel="stylesheet" type="text/css" href="<c:url value="resources/css/bootstrap.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="resources/css/bootstrap-theme.css"/>" />
 </head>
 <body>
-<h2>Spring MVC Application -- Sharing Photos</h2>
-<ul>
-<li><a href="login">Login</a> | <a href="register">Register</a></li>
-<li><a href="giftchain">View Gift Chain</a></li>
-<li><a href="uploadgift">Create New Gift</a></li>
-<li><a href="populargift">Most Popular Gifts</a></li>
-<li><a href="popularuser">Most Popular Users</a></li>
-</ul>
 
+	<h2>Spring MVC Application -- Sharing Gifts</h2>
+	<ul class="list-group">
+	<li class="list-group-item"><a href="login">Login</a> | <a href="register">Register</a></li>
+	<li class="list-group-item"><a href="giftchain">View Gift Chain</a></li>
+	<li class="list-group-item"><a href="uploadgift">Create New Gift</a></li>
+	<li class="list-group-item"><a href="populargift">Most Popular Gifts</a></li>
+	<li class="list-group-item"><a href="popularuser">Most Popular Users</a></li>
+	</ul>
 	<sec:authorize access="hasRole('ROLE_USER')">
 		<!-- For login user -->
 		<c:url value="/j_spring_security_logout" var="logoutUrl" />
@@ -30,10 +32,8 @@
 		</script>
  
 		<c:if test="${pageContext.request.userPrincipal.name != null}">
-			<h4>
 				User : ${pageContext.request.userPrincipal.name} | <a
 					href="javascript:formSubmit()"> Logout</a>
-			</h4>
 		</c:if>
  
  

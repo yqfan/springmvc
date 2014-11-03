@@ -221,7 +221,7 @@ public class HomeController {
 	
 	@RequestMapping(value="/uploadgift", method=RequestMethod.POST)
     public ModelAndView uploadGift(@RequestParam("title") String title, @RequestParam("desc") String desc,
-    		@RequestParam("file") MultipartFile file) {
+    		@RequestParam("img") MultipartFile file) {
 		logger.info("/uploadgift POST method is called");
 		Gift gift = new Gift(title, desc);
 		
