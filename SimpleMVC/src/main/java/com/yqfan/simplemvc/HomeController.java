@@ -23,11 +23,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.UserProfile;
+import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,6 +39,7 @@ import com.yqfan.simplemvc.dao.GiftDao;
 import com.yqfan.simplemvc.dao.UserDao;
 import com.yqfan.simplemvc.model.Gift;
 import com.yqfan.simplemvc.model.MyUser;
+import com.yqfan.simplemvc.social.SecurityUtil;
 import com.yqfan.simplemvc.util.GiftTouchCountComp;
 import com.yqfan.simplemvc.util.UserTotalVoteComp;
 
@@ -76,8 +81,7 @@ public class HomeController {
     }
     
     private String getCurrentUserName() {
-    	User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String name = user.getUsername(); //get logged in username
+    	String name = SecurityContextHolder.getContext().getAuthentication().getName();
         logger.info("getCurrentUserName is called: current login user="+name);
         return name;
     }
@@ -114,6 +118,35 @@ public class HomeController {
 		model.setViewName("login");
 		
 		return model;
+	}
+	
+	@RequestMapping(value="/signin", method=RequestMethod.GET) 
+	public String loginProvider(WebRequest request) {
+		return "home";
+	}
+	
+	@SuppressWarnings("deprecation")
+	@RequestMapping(value="/signup", method=RequestMethod.GET)
+	public String signupForm(WebRequest request) {
+		logger.info("signup is called");
+	    Connection<?> connection = ProviderSignInUtils.getConnection(request);
+	    if (connection != null) {
+	    	UserProfile profile = connection.fetchUserProfile();
+	    	logger.info("first name is " + profile.getFirstName());
+	    	logger.info("username="+profile.getName());
+	    	
+	    	MyUser muser = userdao.findByName(profile.getName());
+	    	if (muser == null) {
+	    		muser = new MyUser();
+	    		muser.setUserName(profile.getName());
+		    	muser.setPassWord("");
+		    	userdao.insert(muser);
+	    	}
+	    	
+	    	SecurityUtil.signInUser(muser);
+	        ProviderSignInUtils.handlePostSignUp(muser.getUserName(), request);
+	    } 
+	    return "home";
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.GET)

@@ -14,11 +14,13 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
       
       <!-- Ensures that configuration properties are read from a property file -->
-    <context:property-placeholder location="classpath:application.properties"/>
+    <context:property-placeholder location="WEB-INF/application.properties"/>
 
+	<facebook:config app-id="${facebook.clientId}" app-secret="${facebook.clientSecret}"/>
+    <twitter:config app-id="${twitter.consumerKey}" app-secret="${twitter.consumerSecret}"/>
     <!--
-        Configures FB and Twitter support.
-    -->
+        Configures FB and Twitter support. 
+    
     <bean id="connectionFactoryLocator" 
       class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
     <property name="connectionFactories">
@@ -34,11 +36,7 @@
         </list>
     </property>
 	</bean>
-	<!-- 
-    <facebook:config app-id="${facebook.app.id}" app-secret="${facebook.app.secret}"/>
-    <twitter:config app-id="${twitter.consumer.key}" app-secret="${twitter.consumer.secret}"/>
-	 -->
-	 
+	--> 
 	 
     <!--
         Configures the connection repository. This application uses JDBC
@@ -50,22 +48,33 @@
 	      class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
 	    <constructor-arg ref="dataSource" />
 	    <constructor-arg ref="connectionFactoryLocator" />
-	    <constructor-arg ref="encoder" />
+	    <constructor-arg ref="textEncryptor" />
 	</bean>
 	
 	<bean id="connectionRepository" factory-method="createConnectionRepository" 
 	      factory-bean="usersConnectionRepository" scope="request">
-	    <constructor-arg value="#{request.userPrincipal.name}" />
+	    <constructor-arg value="#{request.getParameter('userId')}" />
 	    <aop:scoped-proxy proxy-target-class="false" />
 	</bean>
-	<!-- 
-    <social:jdbc-connection-repository/>
-     -->
 
     <!--
         This bean manages the connection flow between the account provider and
         the example application.
     -->
-    <bean id="connectController" class="org.springframework.social.connect.web.ConnectController"
-          autowire="constructor"/> 
+    <bean id="connectController" class="org.springframework.social.connect.web.ConnectController">
+    	<constructor-arg ref="connectionFactoryLocator"/>
+    	<constructor-arg ref="connectionRepository"/>
+    </bean>
+          
+    <bean id="signInAdapter" class="com.yqfan.simplemvc.social.SocialSignInAdapter" />
+     
+    <bean id="providerSignInController" class="org.springframework.social.connect.web.ProviderSignInController" >
+    	<constructor-arg ref="connectionFactoryLocator"/>
+  		<constructor-arg ref="usersConnectionRepository"/>
+  		<constructor-arg ref="signInAdapter"/>
+  	</bean> 
+          
+    <bean id="userIdSource" class="org.springframework.social.security.AuthenticationNameUserIdSource"/>
+      
+    <bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors" factory-method="noOpText" />   
 </beans>

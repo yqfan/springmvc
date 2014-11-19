@@ -64,16 +64,20 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <h2><spring:message code="label.social.sign.in.title"/></h2>
+            <form action="<c:url value="signin/facebook" />" method="POST">
+            <!-- Add CSRF token -->
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <div class="row social-button-row">
                 <div class="col-lg-4">
                     <!-- Add Facebook sign in button -->
-                    <a href="${pageContext.request.contextPath}/auth/facebook"><button class="btn btn-facebook"><i class="icon-facebook"></i> | <spring:message code="label.facebook.sign.in.button"/></button></a>
+                    <button type="submit" class="btn btn-facebook"><i class="icon-facebook"></i> | <spring:message code="label.facebook.sign.in.button"/></button>
                 </div>
             </div>
+            </form>
             <div class="row social-button-row">
                 <div class="col-lg-4">
                     <!-- Add Twitter sign in Button -->
-                    <a href="${pageContext.request.contextPath}/auth/twitter"><button class="btn btn-twitter"><i class="icon-twitter"></i> | <spring:message code="label.twitter.sign.in.button"/></button></a>
+                    <a href="signin/twitter"><button class="btn btn-twitter"><i class="icon-twitter"></i> | <spring:message code="label.twitter.sign.in.button"/></button></a>
                 </div>
             </div>
         </div>

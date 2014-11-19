@@ -12,17 +12,17 @@
  
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		
-		<!-- The following 3 lines are for local mysql database 
+		<!-- The following 3 lines are for local mysql database --> 
 		<property name="url" value="jdbc:mysql://localhost:3306/test" />
 		<property name="username" value="root" />
 		<property name="password" value=""/>
-		-->
 		
-		<!-- The following 3 lines are for AWS mysql database -->
+		
+		<!-- The following 3 lines are for AWS mysql database 
 		<property name="url" value="${mysqlUrl}"/>
 		<property name="username" value="${mysqlUserName}" />
 		<property name="password" value="${mysqlPassWord}" />
-		 
+		 -->
 	</bean>
  
 </beans>

@@ -20,7 +20,7 @@
 			Description : "<strong> ${gift.description } </strong>"
 		</div>
 		<div class="row">
-			<sec:authorize access="hasRole('ROLE_USER')">
+			<sec:authorize access="isAuthenticated()">
 			 	<form name="voteForm" action="giftdetail?id=${gift.id }" method="POST" > 
 			 		<button type="submit" name="vote" style="color:#FF1493;background-color:transparent;border:none;padding:0"><i class="icon-heart"></i></button> <strong> ${gift.touchCount }</strong>
 			 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

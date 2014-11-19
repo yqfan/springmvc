@@ -18,7 +18,7 @@
 	<li class="list-group-item"><a href="populargift">Most Popular Gifts</a></li>
 	<li class="list-group-item"><a href="popularuser">Most Popular Users</a></li>
 	</ul>
-	<sec:authorize access="hasRole('ROLE_USER')">
+	<sec:authorize access="isAuthenticated()">
 		<!-- For login user -->
 		<c:url value="/j_spring_security_logout" var="logoutUrl" />
 		<form action="${logoutUrl}" method="post" id="logoutForm">
@@ -35,8 +35,6 @@
 				User : ${pageContext.request.userPrincipal.name} | <a
 					href="javascript:formSubmit()"> Logout</a>
 		</c:if>
- 
- 
 	</sec:authorize>
 </body>
 </html>
